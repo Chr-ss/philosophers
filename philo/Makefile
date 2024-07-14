@@ -6,7 +6,7 @@ CFLAGS		=	-Wall -Werror -Wextra -Wunused -Wuninitialized -Wunreachable-code -g3 
 SRCDIR		=	src
 SRC			=	$(shell find $(SRCDIR) -iname "*.c")
 
-OBJDIR		=	build
+OBJDIR		=	.build
 OBJ			=	$(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 
