@@ -6,7 +6,7 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 14:43:30 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/15 19:03:02 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/15 20:43:44 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ int	parsing(char **argv);
 int	init_philos(t_data *data, t_philo *philos, pthread_mutex_t *forks);
 
 int thread(t_data *data);
+
+int	death_check(t_philo *philo);
 
 size_t	ft_atoi(const char *nptr);
 size_t	ft_strlen(const char *s);

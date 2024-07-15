@@ -6,7 +6,7 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 18:55:29 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/15 19:09:17 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/15 20:39:34 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,7 @@ int	init_data(t_data *data, char **argv, t_philo *philos, pthread_mutex_t *forks
 		data->nbr_meals = (int) ft_atoi(argv[5]);
 	else
 		data->nbr_meals = -1;
-	if (data->nbr_philo < 1 || data->nbr_philo > MAX_PHILO || data->time_die < 0 \
-		|| data->time_eat < 0 || data->time_sleep < 0 || (data->nbr_meals != -1 \
-		&& data->nbr_meals <= 0))
+	if (data->nbr_philo < 1 || data->nbr_philo > MAX_PHILO || (data->nbr_meals != -1 && data->nbr_meals <= 0))
 		return (error("Invalid input!\n"));
 	if (init_data_mutex(data))
 		return (1);
