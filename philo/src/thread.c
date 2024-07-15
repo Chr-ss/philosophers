@@ -6,23 +6,34 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 21:14:52 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/14 23:09:20 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/15 19:24:21 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-void	monitor_fuc(void *arg)
-{
-	t_philo	*philos;
-
-	philos = (t_philo *) arg;
-}
-
 int thread(t_data *data)
 {
-	pthread_t	monito_thread;
+	t_philo		*philos;
+	pthread_t	monitor_thread;
+	int			i;
 
-	pthread_create(&monito_thread, NULL, &monitor_fuc, data->philos);
+	i = 0;
+	philos = data->philos;
+	if (pthread_create(&monitor_thread, NULL, &monitor, data) != 0)
+		return (destroy_mutexes("thread: pthread_create error", data));
+	while (i < data->nbr_philo)
+	{
+		if (pthread_create(&philos[i].thread, NULL, &routine, &philos[i]) != 0)
+			return (destroy_mutexes("thread: pthread_create error", data));
+		i++;
+	}
+	if (pthread_join(monitor_thread, NULL) != 0)
+		return (destroy_mutexes("thread: pthread_join error1", data));
+	while (--i >= 0)
+	{
+		if (pthread_join(philos[i].thread, NULL) != 0)
+			return (destroy_mutexes("thread: pthread_join error2", data));
+	}
 	return (0);
 }

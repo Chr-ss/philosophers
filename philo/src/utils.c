@@ -5,69 +5,45 @@
 /*                                                     +:+                    */
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/10/06 13:40:19 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/14 20:25:21 by crasche       ########   odam.nl         */
+/*   Created: 2024/07/15 14:43:55 by crasche       #+#    #+#                 */
+/*   Updated: 2024/07/15 19:11:24 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-void	ft_bzero(void *s, size_t n)
+int	death_check(t_philo *philo)
 {
-	while (n--)
-		((unsigned char *)s)[n] = '\0';
-}
-
-int	ft_isdigit(int c)
-{
-	if (48 <= c && c <= 57)
+	if (pthread_mutex_lock(philo->death_mutex) != 0)
+		error("Mutex error.\n");
+	if (*(philo->death) == true)
+	{
+		if (pthread_mutex_unlock(philo->death_mutex) != 0)
+			error("Mutex error.\n");
 		return (1);
+	}
+	if (pthread_mutex_unlock(philo->death_mutex) != 0)
+		error("Mutex error.\n");
 	return (0);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+size_t	get_curr_time(void)
 {
-	void	*ptr;
+	struct timeval	timeofday;
 
-	if (nmemb == 0 || size == 0)
-	{
-		nmemb = 1;
-		size = 1;
-	}
-	else if (!(((nmemb * size) / size) == nmemb))
-		return (NULL);
-	ptr = malloc(nmemb * size);
-	if (!ptr)
-		return (NULL);
-	ft_bzero(ptr, nmemb * size);
-	return (ptr);
+	if (gettimeofday(&timeofday, NULL) != 0)
+		return (error("get_curr_time: gettimeofday error\n"));
+	return (timeofday.tv_sec * 1000 + timeofday.tv_usec / 1000);
 }
 
-size_t	ft_strlen(const char *s)
+void	print_state(t_philo *philo, char *msg)
 {
-	const char	*start;
+	size_t	curr_time;
 
-	start = s;
-	while (*s++);
-	return (s - start);
-}
-
-size_t	ft_atoi(const char *nptr)
-{
-	size_t	nbr;
-	int	sign;
-
-	nbr = 0;
-	sign = 1;
-	while ((9 <= *nptr && *nptr <= 13) || *nptr == 32)
-		nptr++;
-	if (*nptr == '-' || *nptr == '+')
-	{
-		if (*nptr == '-')
-			sign = -1;
-		nptr++;
-	}
-	while (ft_isdigit(*nptr) == 1)
-		nbr = (nbr * 10) + (*nptr++ - 48);
-	return (sign * nbr);
+	if (pthread_mutex_lock(philo->write_mutex) != 0)
+		error("Mutex error.\n");
+	curr_time = (get_curr_time() - philo->time_start);
+	printf("%zu %d %s", curr_time, philo->id, msg);
+	if (pthread_mutex_unlock(philo->write_mutex) != 0)
+		error("Mutex error.\n");
 }
