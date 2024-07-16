@@ -6,7 +6,7 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 18:55:29 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/15 20:39:34 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/16 18:21:08 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ static int	init_data_mutex(t_data *data)
 	return (0);
 }
 
-int	init_data(t_data *data, char **argv, t_philo *philos, pthread_mutex_t *forks)
+int	init_data(t_data *data, char **argv, t_philo *philos, \
+				pthread_mutex_t *forks)
 {
 	data->philos = philos;
 	data->forks = forks;
@@ -37,14 +38,16 @@ int	init_data(t_data *data, char **argv, t_philo *philos, pthread_mutex_t *forks
 		data->nbr_meals = (int) ft_atoi(argv[5]);
 	else
 		data->nbr_meals = -1;
-	if (data->nbr_philo < 1 || data->nbr_philo > MAX_PHILO || (data->nbr_meals != -1 && data->nbr_meals <= 0))
+	if (data->nbr_philo < 1 || data->nbr_philo > MAX_PHILO || \
+		(data->nbr_meals != -1 && data->nbr_meals <= 0))
 		return (error("Invalid input!\n"));
 	if (init_data_mutex(data))
 		return (1);
 	return (0);
 }
 
-static int	init_philos_forks(t_data *data, t_philo *philos, pthread_mutex_t *forks)
+static int	init_philos_forks(t_data *data, t_philo *philos, \
+				pthread_mutex_t *forks)
 {
 	int	i;
 

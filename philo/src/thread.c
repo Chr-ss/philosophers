@@ -6,13 +6,13 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 21:14:52 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/15 19:24:21 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/16 18:19:15 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-int thread(t_data *data)
+int	thread(t_data *data)
 {
 	t_philo		*philos;
 	pthread_t	monitor_thread;

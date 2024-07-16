@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   utils.c                                            :+:    :+:            */
+/*   lib.c                                              :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/06 13:40:19 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/14 20:25:21 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/16 18:20:30 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,15 @@ size_t	ft_strlen(const char *s)
 	const char	*start;
 
 	start = s;
-	while (*s++);
+	while (*s++)
+		;
 	return (s - start);
 }
 
 size_t	ft_atoi(const char *nptr)
 {
 	size_t	nbr;
-	int	sign;
+	int		sign;
 
 	nbr = 0;
 	sign = 1;
