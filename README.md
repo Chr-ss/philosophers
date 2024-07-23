@@ -1,58 +1,33 @@
-# philosophers
-Codam - Philosophers
+# Project Description: Philosophers Problem
 
-# number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
+## Overview
 
-◦ number_of_philosophers: The number of philosophers and also the number
-of forks.
-◦ time_to_die (in milliseconds): If a philosopher didn’t start eating time_to_die
-milliseconds since the beginning of their last meal or the beginning of the simulation, they die.
-◦ time_to_eat (in milliseconds): The time it takes for a philosopher to eat.
-During that time, they will need to hold two forks.
-◦ time_to_sleep (in milliseconds): The time a philosopher will spend sleeping.
-◦ number_of_times_each_philosopher_must_eat (optional argument): If all
-philosophers have eaten at least number_of_times_each_philosopher_must_eat
-times, the simulation stops. If not specified, the simulation stops when a
-philosopher dies.
+The "Philosophers Problem" is a classic synchronization problem in computer science, designed to illustrate the challenges of allocating resources among concurrent processes without causing deadlock. This project involves simulating a group of philosophers sitting at a round table, alternating between eating, thinking, and sleeping. Each philosopher requires two forks to eat, and there are as many forks as there are philosophers, placed between them.
 
+## Objectives
 
-# print statements
+- **Concurrency and Threading**: Learn the basics of creating and managing threads in a program.
+- **Synchronization**: Implement mutexes to prevent data races and ensure safe access to shared resources.
+- **Simulation**: Create a realistic simulation where each philosopher alternates between different states (eating, thinking, sleeping) while ensuring they do not starve.
 
-◦ timestamp_in_ms X has taken a fork
-◦ timestamp_in_ms X is eating
-◦ timestamp_in_ms X is sleeping
-◦ timestamp_in_ms X is thinking
-◦ timestamp_in_ms X died
+## Key Concepts
 
+- **Threads**: Each philosopher is represented as a thread, allowing them to operate concurrently.
+- **Mutexes**: Forks are protected by mutexes to prevent more than one philosopher from using the same fork simultaneously.
+- **State Management**: Track and log the state of each philosopher (eating, thinking, sleeping) with precise timing to ensure the simulation is accurate.
 
-# allowed functions
-memset
-printf
-malloc
-free
-write
+## Rules and Constraints
 
-int usleep(useconds_t usec);
-	usec = microseconds
-	0 on success, -1 on error
+1. **Philosopher Actions**: Philosophers can only eat if they have both their left and right forks. They alternate between eating, thinking, and sleeping.
+2. **Fork Management**: There is one fork between each pair of philosophers. Philosophers pick up the fork on their left and right to eat, and release them after eating.
+3. **Synchronization**: Use mutexes to prevent deadlock and ensure that philosophers can safely pick up and put down forks.
+4. **Logging**: Each state change of a philosopher (taking a fork, eating, sleeping, thinking, dying) must be logged with a timestamp.
+5. **Program Termination**: The simulation stops when a philosopher dies of starvation or if all philosophers have eaten a specified number of times.
 
-int gettimeofday(struct timeval *restrict tv, struct timezone *_Nullable restrict tz);
-	0 on success, -1 on error
-	struct timeval {
-		time_t      tv_sec;     /* seconds */
-		suseconds_t tv_usec;    /* microseconds */
-	};
-	struct timezone {
-		int tz_minuteswest;     /* minutes west of Greenwich */
-		int tz_dsttime;         /* type of DST correction */
-	};
+## Program Requirements
 
-int pthread_create(pthread_t *restrict thread, const pthread_attr_t *restrict attr, void *(*start_routine)(void *), void *restrict arg);
+- **Languages and Libraries**: The project must be written in C using standard libraries such as `pthread` for threading and `pthread_mutex` for mutexes.
+- **Makefile**: Provide a Makefile with targets for building, cleaning, and rebuilding the project.
+- **Git Repository**: Submit the project via a git repository, adhering to the specified directory structure and file naming conventions.
 
-pthread_detach
-pthread_join
-
-int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);
-int pthread_mutex_destroy(pthread_mutex_t *mutex);
-int pthread_mutex_lock(pthread_mutex_t *mutex);
-int pthread_mutex_unlock(pthread_mutex_t *mutex);
+By completing this project, you will gain a deeper understanding of concurrency, synchronization, and resource allocation in multi-threaded applications.
