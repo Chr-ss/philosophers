@@ -1,4 +1,4 @@
-# Project Description: Philosophers Problem
+# Philosophers Problem
 
 ## Overview
 
