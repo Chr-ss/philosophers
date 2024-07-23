@@ -6,7 +6,7 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 21:07:42 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/15 19:00:13 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/17 18:22:49 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,16 @@ static int	parsing_digits(char *str)
 	int	i;
 
 	i = 0;
+	if (str && str[i] == '0')
+		return (1);
 	while (str && ft_isdigit((int) str[i]))
 		i++;
 	if (str[i] || !i)
-		return (-1);
+		return (1);
 	return (0);
 }
 
-int	parsing(char **argv)
+int	parsing(int argc, char **argv)
 {
 	if (parsing_digits(argv[1]))
 		return (error("Invalid, number_of_philosophers.\n"));
@@ -34,7 +36,7 @@ int	parsing(char **argv)
 		return (error("Invalid, time_to_eat.\n"));
 	if (parsing_digits(argv[4]))
 		return (error("Invalid, time_to_sleep.\n"));
-	if (argv[5] && parsing_digits(argv[5]))
-		error("Invalid, number_of_meals.\n");
+	if (argc == 6 && parsing_digits(argv[5]))
+		return (error("Invalid, number_of_meals.\n"));
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 21:14:52 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/16 18:19:15 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/17 22:05:29 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,17 @@ int	thread(t_data *data)
 
 	i = 0;
 	philos = data->philos;
-	if (pthread_create(&monitor_thread, NULL, &monitor, data) != 0)
-		return (destroy_mutexes("thread: pthread_create error", data));
+	pthread_mutex_lock(&data->start_mutex);
 	while (i < data->nbr_philo)
 	{
 		if (pthread_create(&philos[i].thread, NULL, &routine, &philos[i]) != 0)
 			return (destroy_mutexes("thread: pthread_create error", data));
 		i++;
 	}
+	data->time_start = get_curr_time();
+	pthread_mutex_unlock(&data->start_mutex);
+	if (pthread_create(&monitor_thread, NULL, &monitor, data) != 0)
+		return (destroy_mutexes("thread: pthread_create error", data));
 	if (pthread_join(monitor_thread, NULL) != 0)
 		return (destroy_mutexes("thread: pthread_join error1", data));
 	while (--i >= 0)

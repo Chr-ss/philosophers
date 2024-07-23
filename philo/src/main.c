@@ -6,7 +6,7 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 14:39:29 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/15 18:59:06 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/17 15:31:38 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,13 @@ int	main(int argc, char **argv)
 
 	if (argc < 5 || argc > 6)
 		return (error(ARGS_USAGE));
-	if (parsing(argv))
+	if (parsing(argc, argv))
 		return (1);
-	data.philos = philos;
 	if (init_data(&data, argv, philos, fork))
 		return (1);
 	if (init_philos(&data, philos, fork))
 		return (1);
 	if (thread(&data))
 		return (1);
-	destroy_mutexes(NULL, &data);
+	return (destroy_mutexes(NULL, &data));
 }

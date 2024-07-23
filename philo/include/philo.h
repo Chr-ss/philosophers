@@ -6,7 +6,7 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/14 14:43:30 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/16 18:26:46 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/17 22:15:00 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <stdbool.h>
 # include <unistd.h>
 
-# define MAX_PHILO 200
+# define MAX_PHILO 201
 # define ARGS_USAGE "ARGS shold be used as follows: \
 number_of_philosophers, time_to_die, time_to_eat, time_to_sleep, \
 [number_of_times_each_philosopher_must_eat]\n"
@@ -29,25 +29,26 @@ typedef struct s_philo
 {
 	int				id;
 	pthread_t		thread;
-	bool			*death;
+	bool			death;
 	int				meals_eaten;
 	int				nbr_philo;
 	int				nbr_meals;
 	size_t			time_die;
 	size_t			time_eat;
 	size_t			time_sleep;
-	size_t			time_start;
 	size_t			time_lmeal;
+	size_t			*time_start;
+	pthread_mutex_t	death_mutex;
+	pthread_mutex_t	*lmeal_mutex;
 	pthread_mutex_t	*meal_mutex;
+	pthread_mutex_t	*start_mutex;
 	pthread_mutex_t	*r_fork;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*write_mutex;
-	pthread_mutex_t	*death_mutex;
 }	t_philo;
 
 typedef struct s_data
 {
-	bool			death;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
 	int				nbr_philo;
@@ -57,7 +58,8 @@ typedef struct s_data
 	size_t			time_sleep;
 	size_t			time_start;
 	pthread_mutex_t	write_mutex;
-	pthread_mutex_t	death_mutex;
+	pthread_mutex_t	start_mutex;
+	pthread_mutex_t	lmeal_mutex;
 	pthread_mutex_t	meal_mutex;
 }	t_data;
 
@@ -96,12 +98,20 @@ size_t	get_curr_time(void);
 void	*monitor(void *arg);
 
 /**
- * @brief Prints message () for philo
+ * @brief Prints msg for philo, with death_check
  * @param t_philo *philo
  * @param char *msg
  * @return void
 */
 void	print_state(t_philo *philo, char *msg);
+
+/**
+ * @brief Prints msg for philo, no death_check
+ * @param t_philo *philo
+ * @param char *msg
+ * @return void
+*/
+void	print_state_eat(t_philo *philo);
 
 /**
  * @brief Destroys all mutexes and write err to SDTERR if set
@@ -121,10 +131,11 @@ void	*routine(void *arg);
 
 /**
  * @brief Parses for invalid input
+ * @param int argc
  * @param char **argv
  * @return 0 if ok, 1 if error
 */
-int		parsing(char **argv);
+int		parsing(int argc, char **argv);
 
 /**
  * @brief Initilizes all philos and forks
@@ -153,9 +164,9 @@ int		death_check(t_philo *philo);
  * @brief Waits for wait ms while checking for death
  * @param t_philo *philo
  * @param size_t wait
- * @return void
+ * @return 0 if waited for wait time, 1 if death
 */
-void	wait_if_no_death(t_philo *philo, size_t wait);
+int		wait_if_no_death(t_philo *philo, size_t wait);
 
 size_t	ft_atoi(const char *nptr);
 size_t	ft_strlen(const char *s);

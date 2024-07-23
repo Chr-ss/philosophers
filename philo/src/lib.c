@@ -6,41 +6,18 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/06 13:40:19 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/16 18:20:30 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/17 21:02:47 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
-
-void	ft_bzero(void *s, size_t n)
-{
-	while (n--)
-		((unsigned char *)s)[n] = '\0';
-}
+#include <limits.h>
 
 int	ft_isdigit(int c)
 {
 	if (48 <= c && c <= 57)
 		return (1);
 	return (0);
-}
-
-void	*ft_calloc(size_t nmemb, size_t size)
-{
-	void	*ptr;
-
-	if (nmemb == 0 || size == 0)
-	{
-		nmemb = 1;
-		size = 1;
-	}
-	else if (!(((nmemb * size) / size) == nmemb))
-		return (NULL);
-	ptr = malloc(nmemb * size);
-	if (!ptr)
-		return (NULL);
-	ft_bzero(ptr, nmemb * size);
-	return (ptr);
 }
 
 size_t	ft_strlen(const char *s)
@@ -69,6 +46,10 @@ size_t	ft_atoi(const char *nptr)
 		nptr++;
 	}
 	while (ft_isdigit(*nptr) == 1)
+	{
+		if (nbr > (UINT_MAX - (*nptr - 48)) / 10)
+			return (0);
 		nbr = (nbr * 10) + (*nptr++ - 48);
+	}
 	return (sign * nbr);
 }

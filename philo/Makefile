@@ -1,8 +1,8 @@
 NAME		=	philo
 RM			=	rm -rf
-CC			=	cc
-CFLAGS		=	-Wall -Werror -Wextra -Wunused -Wuninitialized -Wunreachable-code -g3 # -MMD -fsanitize=address # -Ofast
-
+CC			=	gcc
+CFLAGS		=	-Wall -Werror -Wextra #-O3
+LDFLAGS		=	# -fsanitize=thread	#-ltsan
 SRCDIR		=	src
 SRC			=	$(shell find $(SRCDIR) -iname "*.c")
 
@@ -13,7 +13,7 @@ OBJ			=	$(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 all:	$(NAME)
 
 $(NAME):	$(OBJ)
-		@$(CC) $(OBJ) -o $(NAME)
+		@$(CC) $(OBJ) -o $(NAME) $(LDFLAGS)
 		@printf "$(CREATED)" $@ $(CUR_DIR)
 
 $(OBJDIR)/%.o:	$(SRCDIR)/%.c

@@ -6,18 +6,36 @@
 /*   By: crasche <crasche@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/15 17:20:27 by crasche       #+#    #+#                 */
-/*   Updated: 2024/07/16 18:21:18 by crasche       ########   odam.nl         */
+/*   Updated: 2024/07/17 21:43:38 by crasche       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo.h"
 
-static bool	monitor_set_death(t_philo *philos)
+static void	monitor_print_state(t_philo *philo, char *msg)
 {
-	pthread_mutex_lock(philos->death_mutex);
-	*philos->death = true;
-	pthread_mutex_unlock(philos->death_mutex);
-	return (true);
+	size_t	curr_time;
+
+	pthread_mutex_lock(philo->write_mutex);
+	curr_time = (get_curr_time() - *(philo->time_start));
+	printf("%zu %d %s", curr_time, philo->id, msg);
+	pthread_mutex_unlock(philo->write_mutex);
+}
+
+static void	monitor_set_death(t_data	*data)
+{
+	t_philo	*philos;
+	int		i;
+
+	philos = data->philos;
+	i = 0;
+	while (i < data->nbr_philo)
+	{
+		pthread_mutex_lock(&philos[i].death_mutex);
+		philos[i].death = 1;
+		pthread_mutex_unlock(&philos[i].death_mutex);
+		i++;
+	}
 }
 
 static bool	monitor_check_starve(t_data	*data, t_philo *philos)
@@ -27,21 +45,21 @@ static bool	monitor_check_starve(t_data	*data, t_philo *philos)
 	i = 0;
 	while (i < data->nbr_philo)
 	{
-		pthread_mutex_lock(philos[i].meal_mutex);
-		if ((philos[i].time_lmeal + philos[i].time_die) < get_curr_time())
+		pthread_mutex_lock(philos[i].lmeal_mutex);
+		if (get_curr_time() - philos[i].time_lmeal > philos[i].time_die)
 		{
-			pthread_mutex_unlock(philos[i].meal_mutex);
-			print_state(&philos[i], "died\n");
-			monitor_set_death(&philos[i]);
+			pthread_mutex_unlock(philos[i].lmeal_mutex);
+			monitor_set_death(data);
+			monitor_print_state(&philos[i], "died\n");
 			return (true);
 		}
-		pthread_mutex_unlock(philos[i].meal_mutex);
+		pthread_mutex_unlock(philos[i].lmeal_mutex);
 		i++;
 	}
 	return (0);
 }
 
-static bool	monitor_check_finish(t_philo *philos)
+static bool	monitor_check_finish(t_data	*data, t_philo *philos)
 {
 	int		i;
 	bool	finished;
@@ -59,7 +77,7 @@ static bool	monitor_check_finish(t_philo *philos)
 		i++;
 	}
 	if (finished)
-		monitor_set_death(&philos[--i]);
+		monitor_set_death(data);
 	return (finished);
 }
 
@@ -70,7 +88,7 @@ void	*monitor(void *arg)
 	data = (t_data *) arg;
 	while (1)
 	{
-		if (monitor_check_finish(data->philos) || \
+		if (monitor_check_finish(data, data->philos) || \
 			monitor_check_starve(data, data->philos))
 			break ;
 	}
